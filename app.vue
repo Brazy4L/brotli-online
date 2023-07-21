@@ -70,7 +70,7 @@ async function getCompressedSizeInputText() {
       <div class="heading-line"></div>
     </div>
     <div class="quality">
-      <span>Quality:</span><span class="quality-span">{{ brotliQuality }}</span>
+      <span class="subtext">Quality:</span><span class="quality-span">{{ brotliQuality }}</span>
     </div>
     <input type="range" min="0" max="11" class="slider" v-model="brotliQuality" />
     <div class="line">
