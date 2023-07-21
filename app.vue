@@ -66,14 +66,14 @@ async function getCompressedSizeInputText() {
       <div class="heading-heading">Options</div>
       <div class="heading-line"></div>
     </div>
-    <div>
+    <div class="checkbox">
       <input
         type="checkbox"
         id="checkbox"
         v-model="removeWhitespace"
         @keydown.enter="removeWhitespace = !removeWhitespace"
       />
-      <label for="checkbox">Remove whitespace</label>
+      <label class="checkbox-text" for="checkbox">Remove whitespace</label>
     </div>
     <div class="heading">
       <div class="heading-line"></div>
@@ -198,6 +198,21 @@ button:focus-visible {
   min-width: fit-content;
 }
 
+.checkbox {
+  display: flex;
+}
+
+#checkbox {
+  margin: 0;
+  width: 16px;
+  height: 16px;
+  accent-color: #43ff82;
+}
+
+.checkbox-text {
+  padding-left: 4px;
+}
+
 .quality {
   display: flex;
   justify-content: center;
@@ -232,6 +247,10 @@ button:focus-visible {
   border-radius: 4px;
   background-color: #43ff82;
   cursor: pointer;
+}
+
+.slider:focus-visible {
+  outline: solid 2px #fff;
 }
 
 .line {
