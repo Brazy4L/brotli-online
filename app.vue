@@ -29,7 +29,9 @@ const convertBytes = (bytes) => {
 };
 
 async function getCompressedSizeInputText() {
-  console.log(convertBytes(999999999));
+  if (!inputText.value) {
+    return;
+  }
   const textEncoder = new TextEncoder();
   const encodedInputText = textEncoder.encode(inputText.value);
   const compressedInputText = await compress(encodedInputText);
@@ -37,9 +39,14 @@ async function getCompressedSizeInputText() {
   const inputTextSize = byteLengthUtf8(inputText.value);
   originalSize.value = convertBytes(inputTextSize);
   brotliSize.value = convertBytes(compressedInputTextSize);
-  compressionRate.value = inputTextSize / compressedInputTextSize;
-  compressionPercentage.value =
-    (inputTextSize / compressedInputTextSize) * 100 - 100;
+  compressionRate.value = parseFloat(
+    (inputTextSize / compressedInputTextSize).toFixed(3)
+  );
+  compressionPercentage.value = Math.abs(
+    parseFloat(
+      ((inputTextSize / compressedInputTextSize) * 100 - 100).toFixed(0)
+    )
+  );
 }
 </script>
 
@@ -48,19 +55,25 @@ async function getCompressedSizeInputText() {
   <div class="info">
     <button @click="getCompressedSizeInputText">Compress</button>
     <div>
-      <span class="subtext">Original size:</span>
+      <span class="subtext">Original size:</span>{{ " " }}
       <span>{{ originalSize }}</span>
     </div>
     <div>
-      <span class="subtext">Brotli size:</span> <span>{{ brotliSize }}</span>
+      <span class="subtext">Brotli size:</span>{{ " "
+      }}<span>{{ brotliSize }}</span>
+      <span class="compression-green" v-if="compressionRate > 1">
+        ({{ compressionPercentage }}% smaller than original)</span
+      >
+      <span
+        class="compression-red"
+        v-if="Number.isFinite(compressionRate) && compressionRate < 1"
+      >
+        ({{ compressionPercentage }}% larger than original)</span
+      >
     </div>
     <div>
-      <span class="subtext">Compression rate:</span>
+      <span class="subtext">Compression rate:</span>{{ " " }}
       <span>{{ compressionRate }}</span>
-    </div>
-    <div>
-      <span class="subtext">Compression Percentage:</span>
-      <span>{{ compressionPercentage }}</span>
     </div>
   </div>
 </template>
@@ -83,13 +96,18 @@ body {
   max-width: 800px;
   margin: 16px auto 16px auto;
   padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 textarea {
+  font-size: 1rem;
   width: 100%;
   height: 300px;
   border-radius: 4px;
   padding: 16px;
+  margin: 0;
   background-color: #292929;
   border: 4px solid #dadada;
   outline: none;
@@ -102,7 +120,7 @@ textarea:focus {
 }
 
 textarea::placeholder {
-  color: #dadada;
+  color: #b4b4b4;
 }
 
 .info {
@@ -115,6 +133,7 @@ textarea::placeholder {
 }
 
 button {
+  font-size: 1rem;
   padding: 16px;
   border: 0;
   border-radius: 4px;
@@ -129,6 +148,6 @@ button:hover {
 }
 
 .subtext {
-  color: #dadada;
+  color: #b4b4b4;
 }
 </style>
