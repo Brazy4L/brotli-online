@@ -12,6 +12,7 @@ const originalSize = ref("");
 const brotliSize = ref("");
 const compressionRate = ref("");
 const compressionPercentage = ref("");
+const removeWhitespace = ref(false);
 
 const byteLengthUtf8 = (str) => new Blob([str]).size;
 
@@ -31,22 +32,19 @@ async function getCompressedSizeInputText() {
   if (!inputText.value) {
     return;
   }
+  const inputTextNoWhitespace = inputText.value.replace(/\s/g, "");
 
   const textEncoder = new TextEncoder();
-  const encodedInputText = textEncoder.encode(inputText.value);
+  const encodedInputText = textEncoder.encode(removeWhitespace.value ? inputTextNoWhitespace : inputText.value);
   const compressedInputText = await compress(encodedInputText);
   const compressedInputTextSize = compressedInputText.length;
 
-  const inputTextSize = byteLengthUtf8(inputText.value);
+  const inputTextSize = byteLengthUtf8(removeWhitespace.value ? inputTextNoWhitespace : inputText.value);
   originalSize.value = convertBytes(inputTextSize);
   brotliSize.value = convertBytes(compressedInputTextSize);
-  compressionRate.value = parseFloat(
-    (inputTextSize / compressedInputTextSize).toFixed(3)
-  );
+  compressionRate.value = parseFloat((inputTextSize / compressedInputTextSize).toFixed(3));
   compressionPercentage.value = Math.abs(
-    parseFloat(
-      ((inputTextSize / compressedInputTextSize) * 100 - 100).toFixed(0)
-    )
+    parseFloat(((inputTextSize / compressedInputTextSize) * 100 - 100).toFixed(0))
   );
 }
 </script>
@@ -55,21 +53,31 @@ async function getCompressedSizeInputText() {
   <textarea v-model="inputText" placeholder="/* Your Code Here */"></textarea>
   <div class="info">
     <button @click="getCompressedSizeInputText">Compress</button>
+    <div class="heading">
+      <div class="heading-line"></div>
+      <div class="heading-heading">Options</div>
+      <div class="heading-line"></div>
+    </div>
+    <div>
+      <input type="checkbox" id="checkbox" v-model="removeWhitespace" />
+      <label for="checkbox">Remove whitespace</label>
+    </div>
+    <div class="heading">
+      <div class="heading-line"></div>
+      <div class="heading-heading">Brotli</div>
+      <div class="heading-line"></div>
+    </div>
     <div class="line">
       <span class="subtext">Original size:</span>{{ " " }}
       <span class="text" v-if="originalSize">{{ originalSize }}</span>
     </div>
     <div class="line">
-      <span class="subtext">Brotli size:</span>{{ " " }}
-      <span class="text" v-if="brotliSize">{{ brotliSize }}</span
+      <span class="subtext">Brotli size:</span>{{ " " }} <span class="text" v-if="brotliSize">{{ brotliSize }}</span
       >{{ " " }}
       <span class="compression compression-green" v-if="compressionRate > 1">
         {{ compressionPercentage }}% smaller than original</span
       >
-      <span
-        class="compression compression-red"
-        v-if="Number.isFinite(compressionRate) && compressionRate < 1"
-      >
+      <span class="compression compression-red" v-if="Number.isFinite(compressionRate) && compressionRate < 1">
         {{ compressionPercentage }}% larger than original</span
       >
     </div>
@@ -86,7 +94,7 @@ async function getCompressedSizeInputText() {
 }
 
 :root {
-  background: #161616;
+  background-color: #161616;
   font-family: sans-serif;
 }
 
@@ -149,8 +157,24 @@ button:hover {
   background-color: #37d46b;
 }
 
-button:focus {
+button:focus-visible {
   outline: solid 4px #fff;
+}
+
+.heading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.heading-line {
+  height: 1px;
+  width: 100%;
+  background-color: #b4b4b4;
+}
+
+.heading-heading {
+  min-width: fit-content;
 }
 
 .line {
