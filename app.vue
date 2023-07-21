@@ -14,6 +14,7 @@ const compressionRate = ref("");
 const compressionPercentage = ref("");
 const removeWhitespace = ref(false);
 const brotliQuality = ref(11);
+const compressionTime = ref("");
 
 const byteLengthUtf8 = (str) => new Blob([str]).size;
 
@@ -38,9 +39,12 @@ async function getCompressedSizeInputText() {
 
   const textEncoder = new TextEncoder();
   const encodedInputText = textEncoder.encode(removeWhitespace.value ? inputTextNoWhitespace : inputText.value);
-  const compressedInputText = await compress(encodedInputText, { quality: brotliQualityNumber });
-  const compressedInputTextSize = compressedInputText.length;
 
+  const startTime = performance.now();
+  const compressedInputText = await compress(encodedInputText, { quality: brotliQualityNumber });
+  const endTime = performance.now();
+
+  const compressedInputTextSize = compressedInputText.length;
   const inputTextSize = byteLengthUtf8(removeWhitespace.value ? inputTextNoWhitespace : inputText.value);
   originalSize.value = convertBytes(inputTextSize);
   brotliSize.value = convertBytes(compressedInputTextSize);
@@ -48,6 +52,7 @@ async function getCompressedSizeInputText() {
   compressionPercentage.value = Math.abs(
     parseFloat(((inputTextSize / compressedInputTextSize) * 100 - 100).toFixed(0))
   );
+  compressionTime.value = parseFloat(((endTime - startTime) / 1000).toFixed(3)) + " sec";
 }
 </script>
 
@@ -90,6 +95,10 @@ async function getCompressedSizeInputText() {
     <div class="line">
       <span class="subtext">Compression rate:</span>{{ " " }}
       <span class="text" v-if="compressionRate">{{ compressionRate }}</span>
+    </div>
+    <div class="line">
+      <span class="subtext">Compression time:</span>{{ " " }}
+      <span class="text" v-if="compressionTime">{{ compressionTime }}</span>
     </div>
   </div>
 </template>
