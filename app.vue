@@ -13,6 +13,7 @@ const brotliSize = ref("");
 const compressionRate = ref("");
 const compressionPercentage = ref("");
 const removeWhitespace = ref(false);
+const brotliQuality = ref(11);
 
 const byteLengthUtf8 = (str) => new Blob([str]).size;
 
@@ -32,11 +33,12 @@ async function getCompressedSizeInputText() {
   if (!inputText.value) {
     return;
   }
+  const brotliQualityNumber = parseFloat(brotliQuality.value);
   const inputTextNoWhitespace = inputText.value.replace(/\s/g, "");
 
   const textEncoder = new TextEncoder();
   const encodedInputText = textEncoder.encode(removeWhitespace.value ? inputTextNoWhitespace : inputText.value);
-  const compressedInputText = await compress(encodedInputText);
+  const compressedInputText = await compress(encodedInputText, { quality: brotliQualityNumber });
   const compressedInputTextSize = compressedInputText.length;
 
   const inputTextSize = byteLengthUtf8(removeWhitespace.value ? inputTextNoWhitespace : inputText.value);
@@ -67,6 +69,10 @@ async function getCompressedSizeInputText() {
       <div class="heading-heading">Brotli</div>
       <div class="heading-line"></div>
     </div>
+    <div class="quality">
+      <span>Quality:</span><span class="quality-span">{{ brotliQuality }}</span>
+    </div>
+    <input type="range" min="0" max="11" class="slider" v-model="brotliQuality" />
     <div class="line">
       <span class="subtext">Original size:</span>{{ " " }}
       <span class="text" v-if="originalSize">{{ originalSize }}</span>
@@ -108,7 +114,7 @@ body {
   padding: 0 16px;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 16px;
 }
 
 textarea {
@@ -175,6 +181,42 @@ button:focus-visible {
 
 .heading-heading {
   min-width: fit-content;
+}
+
+.quality {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+
+.quality-span {
+  min-width: 17.8px;
+}
+
+.slider {
+  appearance: none;
+  width: 100%;
+  height: 12px;
+  border-radius: 4px;
+  background-color: #161616;
+}
+
+.slider::-webkit-slider-thumb {
+  appearance: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background-color: #43ff82;
+  cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+  border: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  background-color: #43ff82;
+  cursor: pointer;
 }
 
 .line {
