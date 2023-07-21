@@ -32,10 +32,12 @@ async function getCompressedSizeInputText() {
   if (!inputText.value) {
     return;
   }
+
   const textEncoder = new TextEncoder();
   const encodedInputText = textEncoder.encode(inputText.value);
   const compressedInputText = await compress(encodedInputText);
   const compressedInputTextSize = compressedInputText.length;
+
   const inputTextSize = byteLengthUtf8(inputText.value);
   originalSize.value = convertBytes(inputTextSize);
   brotliSize.value = convertBytes(compressedInputTextSize);
