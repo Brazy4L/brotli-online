@@ -24,7 +24,6 @@ const convertBytes = (bytes) => {
       break;
     }
   }
-
   return parseFloat(bytes.toFixed(3)) + " " + units[i];
 };
 
@@ -56,26 +55,27 @@ async function getCompressedSizeInputText() {
   <textarea v-model="inputText" placeholder="/* Your Code Here */"></textarea>
   <div class="info">
     <button @click="getCompressedSizeInputText">Compress</button>
-    <div>
+    <div class="line">
       <span class="subtext">Original size:</span>{{ " " }}
-      <span>{{ originalSize }}</span>
+      <span class="text" v-if="originalSize">{{ originalSize }}</span>
     </div>
-    <div>
-      <span class="subtext">Brotli size:</span>{{ " "
-      }}<span>{{ brotliSize }}</span>
-      <span class="compression-green" v-if="compressionRate > 1">
-        ({{ compressionPercentage }}% smaller than original)</span
+    <div class="line">
+      <span class="subtext">Brotli size:</span>{{ " " }}
+      <span class="text" v-if="brotliSize">{{ brotliSize }}</span
+      >{{ " " }}
+      <span class="compression compression-green" v-if="compressionRate > 1">
+        {{ compressionPercentage }}% smaller than original</span
       >
       <span
-        class="compression-red"
+        class="compression compression-red"
         v-if="Number.isFinite(compressionRate) && compressionRate < 1"
       >
-        ({{ compressionPercentage }}% larger than original)</span
+        {{ compressionPercentage }}% larger than original</span
       >
     </div>
-    <div>
+    <div class="line">
       <span class="subtext">Compression rate:</span>{{ " " }}
-      <span>{{ compressionRate }}</span>
+      <span class="text" v-if="compressionRate">{{ compressionRate }}</span>
     </div>
   </div>
 </template>
@@ -111,7 +111,7 @@ textarea {
   padding: 16px;
   margin: 0;
   background-color: #292929;
-  border: 4px solid #dadada;
+  border: 4px solid #fff;
   outline: none;
   resize: none;
   transition: border 0.15s ease-out;
@@ -149,7 +149,43 @@ button:hover {
   background-color: #37d46b;
 }
 
+button:focus {
+  outline: solid 4px #fff;
+}
+
+.line {
+  min-height: 26px;
+  display: flex;
+  align-items: center;
+  column-gap: 4px;
+  row-gap: 8px;
+  flex-wrap: wrap;
+}
+
 .subtext {
   color: #b4b4b4;
+}
+
+.text {
+  background-color: #fff;
+  padding: 4px 16px;
+  border-radius: 9999px;
+  color: #000;
+  white-space: nowrap;
+}
+
+.compression {
+  padding: 4px 16px;
+  border-radius: 9999px;
+  white-space: nowrap;
+  color: #000;
+}
+
+.compression-green {
+  background-color: #43ff82;
+}
+
+.compression-red {
+  background-color: #ff5943;
 }
 </style>
