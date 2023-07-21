@@ -5,6 +5,7 @@ import { compress } from "brotli-compress";
 useHead({
   title: "Brotli Online",
   meta: [{ name: "color-scheme", content: "dark" }],
+  link: [{ rel: "icon", href: "/favicon.svg", type: "image/svg+xml" }],
 });
 
 const inputText = ref("");
