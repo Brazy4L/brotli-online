@@ -1,57 +1,17 @@
-## Setup
+<h1 align="center">
+  <a href="https://brazy4l.github.io/brotli-online/">DEMO</a>
+</h1>
 
-Make sure to install the dependencies:
+Paste your code into the input box, compress it using brotli and compare an original size to the compressed one. You can optionally remove the whitespace. And set the quality of compression to any number ranging from 0 to 11.
 
-```bash
-# npm
-npm install
+## Development
 
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-```
+1. Clone the repository
+1. To install dependencies, run:
+   ```sh
+   npm install
+   ```
+1. To start it locally, run:
+   ```sh
+   npm run dev
+   ```
