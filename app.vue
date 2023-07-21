@@ -66,7 +66,12 @@ async function getCompressedSizeInputText() {
       <div class="heading-line"></div>
     </div>
     <div>
-      <input type="checkbox" id="checkbox" v-model="removeWhitespace" />
+      <input
+        type="checkbox"
+        id="checkbox"
+        v-model="removeWhitespace"
+        @keydown.enter="removeWhitespace = !removeWhitespace"
+      />
       <label for="checkbox">Remove whitespace</label>
     </div>
     <div class="heading">
