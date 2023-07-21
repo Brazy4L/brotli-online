@@ -1,5 +1,5 @@
 {
-  "name": "nuxt-app",
+  "name": "brotli-online",
   "private": true,
   "scripts": {
     "build": "nuxt build",
