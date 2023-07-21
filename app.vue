@@ -15,20 +15,31 @@ const compressionPercentage = ref("");
 
 const byteLengthUtf8 = (str) => new Blob([str]).size;
 
+const convertBytes = (bytes) => {
+  let units = ["B", "KB", "MB"];
+  let i = 0;
+  for (i; bytes > 1_000; i++) {
+    bytes /= 1_000;
+    if (i === 2) {
+      break;
+    }
+  }
+
+  return parseFloat(bytes.toFixed(3)) + " " + units[i];
+};
+
 async function getCompressedSizeInputText() {
+  console.log(convertBytes(999999999));
   const textEncoder = new TextEncoder();
   const encodedInputText = textEncoder.encode(inputText.value);
   const compressedInputText = await compress(encodedInputText);
-
-  const sizeInBytes = compressedInputText.length;
-  const sizeInKB = compressedInputText.length / 1_000;
-  const sizeInMB = compressedInputText.length / 1_000_000;
-
+  const compressedInputTextSize = compressedInputText.length;
   const inputTextSize = byteLengthUtf8(inputText.value);
-  originalSize.value = inputTextSize;
-  brotliSize.value = sizeInBytes;
-  compressionRate.value = inputTextSize / sizeInBytes;
-  compressionPercentage.value = (inputTextSize / sizeInBytes) * 100 - 100;
+  originalSize.value = convertBytes(inputTextSize);
+  brotliSize.value = convertBytes(compressedInputTextSize);
+  compressionRate.value = inputTextSize / compressedInputTextSize;
+  compressionPercentage.value =
+    (inputTextSize / compressedInputTextSize) * 100 - 100;
 }
 </script>
 
